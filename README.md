@@ -12,4 +12,4 @@
 <strong>Step 5:</strong> Now run json server from project directory with this command<br>
 <code>json-server --watch db.json</code>
 <br>
-<strong>Step 6:</strong> Finally index.html with google chrome
+<strong>Step 6:</strong> Finally index.html with web browser
