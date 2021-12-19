@@ -1,6 +1,6 @@
 # Complete-XMLHttpRequest
 <h3>How to run this project</h3>
-<strong>Step 1:</strong> Install node js from <a href="https://nodejs.org/en/download/>https://nodejs.org/en/download/</a>
+<strong>Step 1:</strong> Install node js from https://nodejs.org/en/download/>https://nodejs.org/en/download/
 <br>
 <strong>Step 2:</strong> pull or download this project.
 <br>
