@@ -37,6 +37,24 @@
                       </div>
                     </div>
                     <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                           Edit Post
+                          </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                          <div class="accordion-body d-flex flex-column">
+                                <select id="selectToEdit" class="form-select">
+                                    <option selected>Open this select menu</option>
+                                </select>
+                                <input id="editTitle" type="text" class="mb-5 mt-4" >
+                                <textarea id="editDesc" cols="30" rows="10"></textarea>
+                                <input type="hidden" id="getPostId">
+                                <button id="postEdit" class="btn btn-secondary btn-lg mt-4">Edit</button>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
                         <h2 class="accordion-header" id="headingThree">
                           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                             Delete POst
@@ -97,12 +115,12 @@
             document.querySelector('#posts').appendChild(postBody);
         }
 
-        function getPostList(postId, postTitle){
+        function getPostList(postId, postTitle, elementId){
             const options = document.createElement('option');
             options.setAttribute('value', postId);
             options.innerText = postId+'. '+postTitle;
 
-            document.getElementById('selectToDelete').appendChild(options);
+            document.getElementById(elementId).appendChild(options);
 
         }
 
@@ -124,7 +142,8 @@
                                 postBody(el.title, el.description, el.id);
 
                                 //Get Post List inside delete accrodion
-                                getPostList(el.id, el.title);
+                                getPostList(el.id, el.title, 'selectToDelete');
+                                getPostList(el.id, el.title, 'selectToEdit');
                             });
                             break;
                     }
@@ -147,6 +166,10 @@
                     break;
                 case 'delete':
                     xhr.send();
+                    break;
+                case 'put':
+                    xhr.setRequestHeader('Content-Type','application/json');
+                    xhr.send(JSON.stringify(data));
                     break;
             }
         }
@@ -189,6 +212,38 @@
             document.querySelector('#selectToDelete > option[value="' + selectedPost+'"]').remove();
 
         })
+
+        // get selected post content
+        document.querySelector('#selectToEdit').addEventListener('change', function(e){
+            const id = e.target.value;
+            
+            const title = document.querySelector(`#postId${id} .card-title`).innerText;
+            const content = document.querySelector(`#postId${id} .card-text`).innerText;
+
+            document.getElementById('getPostId').value = id;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editDesc').innerText = content;
+        })
+
+        // Update post
+        document.getElementById('postEdit').addEventListener('click', function(e){
+            e.preventDefault();
+      
+            const title = document.getElementById('editTitle').value;
+            const content = document.getElementById('editDesc').value;
+            const postId = document.getElementById('getPostId').value;
+        
+            const data = {
+                'title': title,
+                'description': content
+            }
+            XHRequest('put', 'http://localhost:3000/posts/'+postId, data)
+
+            document.querySelector(`#postId${postId} .card-title`).innerText = title;
+            document.querySelector(`#postId${postId} .card-text`).innerText = content;
+      
+        });
+
         //Get post at the time of page loading
         function getPosts() {
             XHRequest('get', 'http://localhost:3000/posts');
